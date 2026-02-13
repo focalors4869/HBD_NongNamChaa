@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>HBD P'Namcha</title>
+    <link href="https://fonts.googleapis.com/css2?family=Mali:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --pink-primary: #ff85a1;
+            --pink-soft: #fbb1bd;
+            --white-glass: rgba(255, 255, 255, 0.7);
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            /* พื้นหลังไล่สีแบบนุ่มนวลขึ้น */
+            background: linear-gradient(45deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%);
+            font-family: 'Mali', cursive;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* --- เอฟเฟกต์หัวใจลอยพื้นหลัง --- */
+        .bg-hearts {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .heart-particle {
+            position: absolute;
+            color: rgba(255, 255, 255, 0.6);
+            animation: floatUp 10s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.8; }
+            90% { opacity: 0.8; }
+            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* --- ตกแต่งการ์ด --- */
+        .login-card {
+            background: var(--white-glass);
+            padding: 40px 25px;
+            border-radius: 40px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+            text-align: center;
+            width: 85%;
+            max-width: 400px;
+            backdrop-filter: blur(15px); /* เอฟเฟกต์กระจกฝ้า */
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            position: relative;
+            z-index: 10;
+        }
+
+        /* เพิ่มโบว์ด้านบนการ์ด */
+        .login-card::before {
+            content: '🎀';
+            font-size: 3rem;
+            position: absolute;
+            top: -35px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        h1 {
+            color: #d63384;
+            font-size: 1.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .date-input-group {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin: 30px 0;
+        }
+
+        .date-input-group input {
+            width: 60px;
+            height: 65px;
+            text-align: center;
+            font-size: 1.5rem;
+            border: 2.5px solid var(--pink-soft);
+            border-radius: 20px;
+            color: #d63384;
+            background: white;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .date-input-group input#year { width: 100px; }
+
+        .date-input-group input:focus {
+            border-color: var(--pink-primary);
+            transform: scale(1.05);
+        }
+
+        .btn-unlock {
+            background: linear-gradient(to right, #ff85a1, #fd5581);
+            color: white;
+            border: none;
+            padding: 16px 40px;
+            border-radius: 35px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            box-shadow: 0 10px 20px rgba(255, 133, 161, 0.4);
+            transition: 0.3s;
+        }
+
+        .btn-unlock:active { transform: scale(0.95); }
+
+        .error-msg {
+            color: #ff4d4d;
+            margin-top: 15px;
+            display: none;
+            font-weight: bold;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            75% { transform: translateX(8px); }
+        }
+	/* 1. เพิ่มเอฟเฟกต์แสงวิ่งผ่านปุ่ม (Shine) */
+	.btn-unlock {
+   	 position: relative;
+   	 overflow: hidden; /* บังคับให้แสงวิ่งแค่ในขอบเขตปุ่ม */
+   	 animation: glow-pulse 2s infinite; /* ใส่แอนิเมชันปุ่มเรืองแสง */
+	}
+
+	.btn-unlock::after {
+  	  content: '';
+    	position: absolute;
+    	top: -50%;
+   	 left: -60%;
+    	width: 20%;
+   	 height: 200%;
+   	 background: rgba(255, 255, 255, 0.4);
+   	 transform: rotate(30deg);
+  	  animation: shine 3s infinite; /* สั่งให้แสงวิ่งทุกๆ 3 วินาที */
+	}
+
+	/* 2. กำหนดจังหวะการเรืองแสงของปุ่ม */
+	@keyframes glow-pulse {
+   	 0% { box-shadow: 0 5px 15px rgba(255, 133, 161, 0.4); }
+   	 50% { box-shadow: 0 5px 30px rgba(255, 133, 161, 0.8); transform: scale(1.02); }
+    	100% { box-shadow: 0 5px 15px rgba(255, 133, 161, 0.4); }
+	}
+
+	/* 3. กำหนดจังหวะการวิ่งของแสง */
+	@keyframes shine {
+  	  100% { left: 150%; }
+	}
+    </style>
+</head>
+<body>
+
+    <div class="bg-hearts" id="heartsContainer"></div>
+
+    <div class="login-card" id="card">
+        <h1>สุขสันต์วันเกิด<br>น้องน้ำชานะคับบ 💖</h1>
+        <p style="color: #888; font-size: 0.85rem;">กรอกวันเกิดให้พี่หน่อยน้าาา</p>
+        
+        <div class="date-input-group">
+            <input type="number" id="day" placeholder="วัน" oninput="moveFocus(this, 'month')">
+            <input type="number" id="month" placeholder="เดือน" oninput="moveFocus(this, 'year')">
+            <input type="number" id="year" placeholder="พ.ศ.">
+        </div>
+
+        <button class="btn-unlock" onclick="checkBirthday()">เปิดกล่องของขวัญ 🎁</button>
+        <p id="error" class="error-msg">เหมือนวันเกิดจะผิดมั้ยน้าา ❌</p>
+    </div>
+
+    <audio id="clickSound" src="openBox.mp3" preload="auto"></audio>
+    <audio id="errorSound" src="errInput.mp3" preload="auto"></audio>
+    <script>
+        // สร้างหัวใจลอยในพื้นหลัง
+        const container = document.getElementById('heartsContainer');
+        const heartIcons = ['❤️', '💖', '✨', '🌸', '🍰'];
+
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.className = 'heart-particle';
+            heart.innerHTML = heartIcons[Math.floor(Math.random() * heartIcons.length)];
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.fontSize = (Math.random() * 20 + 10) + 'px';
+            heart.style.duration = (Math.random() * 5 + 5) + 's';
+            container.appendChild(heart);
+
+            setTimeout(() => { heart.remove(); }, 10000);
+        }
+
+        setInterval(createHeart, 800);
+
+        function moveFocus(current, nextId) {
+            if (current.value.length >= 2) {
+                document.getElementById(nextId).focus();
+            }
+        }
+
+function checkBirthday() {
+    const sound = document.getElementById('clickSound');
+    const errorSnd = document.getElementById('errorSound');
+    
+    // รีเซ็ตเสียงทั้งหมด
+    sound.pause(); sound.currentTime = 0;
+    errorSnd.pause(); errorSnd.currentTime = 0;
+
+    const d = parseInt(document.getElementById('day').value, 10);
+    const m = parseInt(document.getElementById('month').value, 10);
+    const y = parseInt(document.getElementById('year').value, 10);
+
+    if (d === 14 && m === 2 && y === 2553) {
+        // ถ้าถูก เล่นเสียงเปิดกล่อง
+        sound.play().catch(e => console.log("Audio play failed"));
+        
+        document.getElementById('card').style.opacity = '0';
+        document.getElementById('card').style.transform = 'scale(1.2) translateY(-20px)';
+        
+        setTimeout(() => {
+            alert('วันเกิดถูกต้องจ้า! รอก่อนนะกำลังเปิดห้องความลับ...');
+            window.location.href = 'main.html'; 
+        }, 600);
+    } else {
+        // ถ้าผิด เล่นเสียง Error
+        errorSnd.play().catch(e => console.log("Error sound failed"));
+        
+        document.getElementById('error').style.display = 'block';
+        document.getElementById('card').style.animation = 'shake 0.3s';
+        setTimeout(() => { document.getElementById('card').style.animation = ''; }, 300);
+    }
+}    </script>
+</body>
+</html>

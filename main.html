@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>HBD Namcha - The Gift</title>
+    <link href="https://fonts.googleapis.com/css2?family=Mali:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: radial-gradient(circle, #ffafbd, #ffc3a0);
+            font-family: 'Mali', cursive;
+            overflow: hidden;
+            position: relative;
+        }
+
+        #instruction {
+            color: white;
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            text-align: center;
+            padding: 0 20px;
+            transition: 0.5s;
+        }
+
+        /* --- กล่องของขวัญ --- */
+        .gift-container {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .gift-container::after {
+            content: '';
+            position: absolute;
+            width: 150px;
+            height: 40px;
+            background: rgba(255, 215, 0, 0.3);
+            bottom: -20px;
+            left: 25px;
+            filter: blur(15px);
+            border-radius: 50%;
+            z-index: -1;
+            animation: pulseGlow 2s infinite;
+        }
+
+        .gift-box {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-color: #ff4d6d;
+            border-radius: 10px;
+            bottom: 0;
+        }
+
+        .gift-lid {
+            position: absolute;
+            width: 110%;
+            height: 40px;
+            background-color: #ff758f;
+            top: -10px;
+            left: -5%;
+            border-radius: 5px;
+            z-index: 2;
+            transition: all 0.5s ease;
+        }
+
+        .gift-ribbon {
+            position: absolute;
+            width: 30px;
+            height: 100%;
+            background-color: #ffb3c1;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        @keyframes shakeBox {
+            0% { transform: rotate(0); }
+            25% { transform: rotate(5deg); }
+            50% { transform: rotate(-5deg); }
+            75% { transform: rotate(5deg); }
+            100% { transform: rotate(0); }
+        }
+
+        .shaking { animation: shakeBox 0.2s infinite; }
+
+        .glow-light {
+            position: absolute;
+            top: 0; left: 50%; transform: translateX(-50%);
+            width: 10px; height: 10px; background: gold;
+            box-shadow: 0 0 50px 20px gold; border-radius: 50%;
+            opacity: 0; transition: opacity 0.3s;
+        }
+
+        /* --- เอฟเฟกต์เสริม --- */
+        .sparkle {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            pointer-events: none;
+            animation: floatingSparkle 5s infinite linear;
+            filter: blur(1px);
+            opacity: 0.6;
+        }
+
+        @keyframes floatingSparkle {
+            0% { transform: translateY(100vh) scale(0); opacity: 0; }
+            50% { opacity: 0.8; }
+            100% { transform: translateY(-10vh) scale(1); opacity: 0; }
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { transform: scale(1); opacity: 0.3; }
+            50% { transform: scale(1.2); opacity: 0.5; }
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px; height: 10px;
+            z-index: 20; pointer-events: none;
+        }
+
+        /* --- Polaroid & Buttons --- */
+        .polaroid {
+            position: absolute;
+            background: white;
+            padding: 20px 20px 80px 20px;
+            box-shadow: 0 15px 45px rgba(0,0,0,0.4);
+            border-radius: 10px;
+            transition: all 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            opacity: 0;
+            width: 85%;
+            max-width: 500px;
+            left: 50%;
+            top: 45%;
+            transform: translate(-50%, -50%) scale(0.5) rotate(-20deg);
+            z-index: 50;
+        }
+
+        .polaroid img {
+            width: 100%; height: auto;
+            max-height: 450px; object-fit: cover;
+            border: 1px solid #eee;
+        }
+
+        .polaroid-text {
+            text-align: center; margin-top: 25px;
+            font-size: 1.6rem; color: #444; font-weight: bold;
+        }
+
+        #next-btn {
+            position: fixed;
+            bottom: 60px; left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+            padding: 18px 50px;
+            background: linear-gradient(135deg, #ff85a1, #fd5581);
+            color: white; border: none; border-radius: 40px;
+            font-family: 'Mali'; font-size: 1.4rem; font-weight: bold;
+            cursor: pointer; display: none;
+            box-shadow: 0 8px 25px rgba(253, 85, 129, 0.4);
+        }
+
+        #final-scene {
+            display: none; text-align: center; z-index: 60;
+        }
+
+        .float-text {
+            animation: floatingText 3s ease-in-out infinite;
+            color: white; text-shadow: 2px 2px 10px rgba(0,0,0,0.3);
+        }
+
+        @keyframes floatingText {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+/* เอฟเฟกต์ขยายภาพเมื่อกด */
+.gift-image {
+    width: 80%;
+    max-width: 500px;
+    border-radius: 20px;
+    box-shadow: 0 0 30px gold;
+    border: 5px solid white;
+    margin: 20px 0;
+    cursor: zoom-in;
+    transition: transform 0.3s ease;
+}
+
+.gift-image:active {
+    transform: scale(1.1); /* ขยายขึ้นเล็กน้อยตอนกด */
+}
+
+/* ปุ่มดาวน์โหลด */
+.download-btn {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 12px 25px;
+    background: #4CAF50;
+    color: white;
+    text-decoration: none;
+    border-radius: 25px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    transition: 0.3s;
+}
+
+.download-btn:hover {
+    background: #45a049;
+    transform: translateY(-2px);
+}
+/* หน้ากากสีดำพื้นหลังตอนขยายรูป */
+#image-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+    cursor: zoom-out;
+}
+
+#image-overlay img {
+    max-width: 95%;
+    max-height: 95%;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(255,255,255,0.2);
+    transform: scale(0.8);
+    transition: transform 0.3s ease;
+}
+
+#image-overlay.active img {
+    transform: scale(1);
+}
+    </style>
+</head>
+<body>
+
+    <div id="instruction">มีของขวัญวางไว้ตรงนี้ 1 กล่อง <br> ลองแตะเพื่อเปิดดูสิ 🎁</div>
+    
+    <div id="hbd-message" style="opacity: 0; position: absolute; top: 20%; transition: 2s; color: white; font-size: 2.2rem; text-align: center; font-weight: bold; text-shadow: 0 0 15px rgba(255,105,180,0.8); pointer-events: none; z-index: 5;">
+        ✨ Happy Birthday ✨<br>น้องน้ำชาค้าบบ
+    </div>
+
+    <div class="gift-container" id="giftContainer" onclick="handleGiftClick()">
+        <div class="glow-light" id="boxGlow"></div>
+        <div class="gift-lid" id="lid"></div>
+        <div class="gift-box">
+            <div class="gift-ribbon"></div>
+        </div>
+    </div>
+
+    <div id="polaroid-container" style="display: none; width: 100%; height: 100vh;"></div>
+    
+    <button id="next-btn" onclick="showNextPhoto()">ถัดไป ✨</button>
+
+    <div id="final-scene">
+        <h2 style="color: white; text-shadow: 0 0 10px gold; font-size: 2rem;">นี่คือของขวัญของหนู! 💖</h2>
+        <img src="gift.jpg" style="width: 80%; max-width: 500px; border-radius: 20px; box-shadow: 0 0 30px gold; border: 5px solid white; margin: 20px 0;">
+        <div style="font-size: 1.5rem;">
+            <p class="float-text">รักที่สุดเลย 🌸</p>
+            <p class="float-text">มีความสุขมากๆ นะ 🎂</p>
+        </div>
+    </div>
+
+    <audio id="shakeSnd" src="shake.mp3" loop></audio>
+    <audio id="popSnd" src="pop.mp3"></audio>
+    <audio id="bgMusic" src="hbd.mp3" loop></audio>
+<audio id="nextPicSnd" src="next.mp3"></audio>
+
+    <script>
+        // สร้างละอองดาว
+        function createSparkles() {
+            for (let i = 0; i < 30; i++) {
+                const sparkle = document.createElement('div');
+                sparkle.className = 'sparkle';
+                const size = Math.random() * 5 + 2;
+                sparkle.style.width = size + 'px';
+                sparkle.style.height = size + 'px';
+                sparkle.style.left = Math.random() * 100 + 'vw';
+                sparkle.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                sparkle.style.animationDelay = Math.random() * 5 + 's';
+                document.body.appendChild(sparkle);
+            }
+        }
+        createSparkles();
+
+        // ฟังก์ชันพลุกระดาษ
+        function createConfetti() {
+            for (let i = 0; i < 60; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = '50%';
+                confetti.style.top = '50%';
+                confetti.style.backgroundColor = ['#ff85a1', '#fbb1bd', '#ffd700', '#00e5ff'][Math.floor(Math.random() * 4)];
+                document.body.appendChild(confetti);
+
+                const destX = (Math.random() - 0.5) * 800;
+                const destY = (Math.random() - 0.5) * 800;
+
+                confetti.animate([
+                    { transform: 'translate(0, 0) scale(1)', opacity: 1 },
+                    { transform: `translate(${destX}px, ${destY}px) rotate(${Math.random()*360}deg) scale(0)`, opacity: 0 }
+                ], { duration: 1500, easing: 'ease-out' }).onfinish = () => confetti.remove();
+            }
+        }
+
+        let clickCount = 0;
+        function handleGiftClick() {
+            clickCount++;
+            const container = document.getElementById('giftContainer');
+            const lid = document.getElementById('lid');
+            const glow = document.getElementById('boxGlow');
+            const shakeSnd = document.getElementById('shakeSnd');
+            const popSnd = document.getElementById('popSnd');
+            const bgMusic = document.getElementById('bgMusic');
+
+            if (clickCount === 1) {
+                container.classList.add('shaking');
+                glow.style.opacity = '1';
+                shakeSnd.play().catch(e => console.log("Audio play failed"));
+            } else if (clickCount === 2) {
+                container.classList.remove('shaking');
+                shakeSnd.pause();
+                lid.style.transform = 'translateY(-300px) rotate(25deg)';
+                lid.style.opacity = '0';
+                popSnd.play();
+                createConfetti();
+                bgMusic.volume = 0.5;
+                bgMusic.play();
+
+                document.getElementById('instruction').style.opacity = '0';
+                const hbdMsg = document.getElementById('hbd-message');
+                hbdMsg.style.opacity = '1';
+                hbdMsg.style.top = '10%';
+
+                setTimeout(startPolaroidScene, 3500);
+            }
+        }
+
+        let currentPhotoIndex = 0;
+        const photos = [
+            { src: 'img1.jpg', text: 'โตขึ้นอีกปีแล้วนะะ 🎂' },
+            { src: 'img2.jpg', text: 'ขอให้ยิ้มเยอะๆ มีความสุขในทุกๆวันนน 💖' },
+            { src: 'img3.jpg', text: 'ขอให้เป็นทีรักของทุกคน เป็นเด็กดีของคนรอบข้างเสมอนะคั๊บบ 🌸' }
+        ];
+
+        function startPolaroidScene() {
+            document.getElementById('giftContainer').style.display = 'none';
+            document.getElementById('hbd-message').style.display = 'none';
+            document.getElementById('polaroid-container').style.display = 'block';
+            showNextPhoto();
+        }
+
+        function showNextPhoto() {
+    const container = document.getElementById('polaroid-container');
+    const nextBtn = document.getElementById('next-btn');
+    const nextPicSnd = document.getElementById('nextPicSnd'); // ดึงตัวแปรเสียงมาเตรียมไว้
+
+    if (currentPhotoIndex < photos.length) {
+        // 1. ลบรูปเก่าออกก่อน (เพื่อให้รูปใหม่ขึ้นมาแทนที่ตรงกลางพอดี)
+        const oldPhoto = container.querySelector('.polaroid');
+        if (oldPhoto) {
+            oldPhoto.style.opacity = '0';
+            setTimeout(() => oldPhoto.remove(), 500);
+        }
+
+        // 2. สร้างโครงสร้างรูปโพลารอยด์ใหม่
+        const data = photos[currentPhotoIndex];
+        const p = document.createElement('div');
+        p.className = 'polaroid';
+        
+        // สุ่มมุมเอียงเล็กน้อยให้น่ารัก (-6 ถึง 6 องศา)
+        const deg = Math.floor(Math.random() * 12) - 6;
+        
+        p.innerHTML = `
+            <img src="${data.src}">
+            <div class="polaroid-text">${data.text}</div>
+        `;
+
+        container.appendChild(p);
+
+        // 3. จังหวะการแสดงผลพร้อมเสียง
+        setTimeout(() => {
+            // --- ส่วนที่เพิ่มเสียง ---
+            if (nextPicSnd) {
+                nextPicSnd.currentTime = 0; // รีเซ็ตเวลาเสียง
+                nextPicSnd.play().catch(e => console.log("Audio next failed: ", e));
+            }
+
+            // --- ส่วนที่แสดงภาพแอนิเมชัน ---
+            p.style.opacity = '1';
+            // ใช้ translate(-50%, -50%) เพื่อให้รูปอยู่กลางจอ iPad ตลอดเวลา
+            p.style.transform = `translate(-50%, -50%) scale(1) rotate(${deg}deg)`;
+            
+            // 4. จัดการปุ่ม "ถัดไป"
+            nextBtn.style.display = 'block';
+            if (currentPhotoIndex === photos.length - 1) {
+                nextBtn.innerText = 'ไปเปิดของขวัญกัน! 🎁';
+                nextBtn.onclick = showGrandFinale; // รูปสุดท้ายให้ไปฉากจบ
+            } else {
+                nextBtn.innerText = 'ถัดไป ✨';
+                nextBtn.onclick = showNextPhoto; // รูปทั่วไปให้เรียกตัวเองซ้ำ
+            }
+            
+            currentPhotoIndex++; // เพิ่มลำดับรูป
+        }, 600); // หน่วงเวลาเล็กน้อยเพื่อให้ดูนุ่มนวล
+    }
+}
+
+        function showGrandFinale() {
+    // 1. ซ่อนส่วนประกอบเดิม
+    document.getElementById('polaroid-container').style.display = 'none';
+    document.getElementById('next-btn').style.display = 'none';
+    
+    // 2. แสดงหน้าจอสุดท้าย
+    const final = document.getElementById('final-scene');
+    final.style.display = 'block';
+    
+    // 3. ใส่เนื้อหา คูปองแบบกดซูมได้ และปุ่มดาวน์โหลด
+    final.innerHTML = `
+        <h2 style="color: white; text-shadow: 0 0 15px gold; font-size: 2.2rem; margin-bottom: 10px;">
+            สุขสันต์วันเกิดนะน้ำชา! 💖
+        </h2>
+        <p style="color: white; font-size: 1.1rem; margin-bottom: 20px; opacity: 0.9;">
+            ( แตะที่รูปเพื่อขยายดูชัดๆ นะ )
+        </p>
+        
+        <img src="gift.jpg" class="gift-image" onclick="openZoom(this.src)" alt="Birthday Coupon">
+        
+        <br>
+        
+        <a href="gift.jpg" download="Coupon_From_P_Paey.jpg" class="download-btn">
+            📥 บันทึกคูปองเก็บไว้
+        </a>
+
+        <div style="margin-top: 40px; font-size: 1.5rem;">
+            <p class="float-text" style="color: #fff; font-weight: bold;">พี่ก็คงจะไม่ได้มีของขวัญให้ เอานี่ไปแทนแล้วกันเนาะะะ 🌸</p>
+        </div>
+    `;
+
+    // 4. เอฟเฟกต์พลุเฉลิมฉลองต่อเนื่อง
+    createConfetti();
+    setInterval(createConfetti, 2500);
+}
+
+// --- ฟังก์ชันสำหรับระบบขยายรูป (Modal Zoom) ---
+function openZoom(src) {
+    const overlay = document.getElementById('image-overlay');
+    const zoomedImg = document.getElementById('zoomed-img');
+    zoomedImg.src = src;
+    overlay.style.display = 'flex';
+    // ใช้ setTimeout เพื่อให้เกิดแอนิเมชันตอนขยาย
+    setTimeout(() => overlay.classList.add('active'), 10);
+}
+
+function closeZoom() {
+    const overlay = document.getElementById('image-overlay');
+    overlay.classList.remove('active');
+    // รอให้แอนิเมชันหดกลับเสร็จก่อนค่อยซ่อน overlay
+    setTimeout(() => overlay.style.display = 'none', 300);
+}
+    </script>
+<div id="image-overlay" onclick="closeZoom()">
+    <img id="zoomed-img" src="" alt="Zoomed">
+</div>
+</body>
+</html>
